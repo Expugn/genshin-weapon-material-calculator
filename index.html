@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="static/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#504e4d"/>
+    <link rel="apple-touch-icon" href="static/logo192.png" />
+    <link rel="manifest" href="manifest.json" />
+
+    <title>Genshin Impact - Weapon Material Calculator</title>
+    <meta name="title" content="Genshin Impact - Weapon Material Calculator"/>
+
+    <!-- META DATA -->
+    <meta name="description" content="Simple calculator for figuring out if you have enough weapon ascension materials so you don't have to do the math yourself.">
+    <meta name="author" content="S'pugn">
+
+    <style>
+        @font-face {
+            font-family: 'hywh';
+            src: url('static/hywh.ttf');
+            font-display: swap;
+        }
+
+        body {
+            /* BACKGROUND STUFF */
+            background: url("static/bg.jpg") no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-color: black;
+
+            /* FONT STUFF */
+            font-family: 'hywh', 'Courier New', Courier, monospace;
+            color: white;
+            text-shadow: 1px 1px 3px #000000;
+        }
+        
+        header {
+            text-align: center;
+            font-size: x-large;
+        }
+
+        #items,
+        #results {
+            margin: auto;
+            text-align: center;
+            padding-top: 3vh;
+        }
+
+        div#items > div {
+            display: inline-block;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        div#items div div {
+            padding: 5px 0 5px 0;
+        }
+
+        img.item {
+            width: 177px;
+            height: 190px;
+            margin: -20px 0 -20px 0;
+            transform: scale(50%);
+            display: block;
+        }
+
+        div#rarity-2 { background-color: rgba(97, 135, 120, 0.5); }
+        div#rarity-3 { background-color: rgba(85, 113, 146, 0.5); }
+        div#rarity-4 { background-color: rgba(111, 98, 152, 0.5); }
+        div#rarity-5 { background-color: rgba(178, 111, 39, 0.5); }
+
+        span.success { color: greenyellow; }
+        span.failure { color: red; }
+
+        #results header {
+            padding-bottom: 1vh;
+        }
+        #results div div.result img {
+            position: relative;
+            top: 20px;
+        }
+        #results div div.result span {
+            font-size: x-large;
+        }
+        span.amount {
+            display: inline-block;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Genshin Impact<br>Weapon Ascension Material Calculator
+    </header>
+
+    <noscript>
+        <header>
+            You need to enable JavaScript to run this app.
+        </header>
+        <style>
+            div {
+                display: none;
+            }
+            header {
+                padding-bottom: 10vh;
+            }
+        </style>
+    </noscript>
+
+    <div id="items">
+        <div id="rarity-5">
+            <div>Needed</div>
+            <input class="need" type="number" min="0" value="0">
+            <img class="item" src="static/item_5.png">
+            <div>Owned</div>
+            <input class="have" type="number" min="0" value="0">
+        </div>
+        <div id="rarity-4">
+            <div>Needed</div>
+            <input class="need" type="number" min="0" value="0">
+            <img class="item" src="static/item_4.png">
+            <div>Owned</div>
+            <input class="have" type="number" min="0" value="0">
+        </div>
+        <div id="rarity-3">
+            <div>Needed</div>
+            <input class="need" type="number" min="0" value="0">
+            <img class="item" src="static/item_3.png">
+            <div>Owned</div>
+            <input class="have" type="number" min="0" value="0">
+        </div>
+        <div id="rarity-2">
+            <div>Needed</div>
+            <input class="need" type="number" min="0" value="0">
+            <img class="item" src="static/item_2.png">
+            <div>Owned</div>
+            <input class="have" type="number" min="0" value="0">
+        </div>
+    </div>
+    <div id="results" hidden>
+        <header>Results</header>
+        <div></div>
+    </div>
+
+    <script>
+        init();
+        function init() {
+            // ADD ONCHANGE EVENT TO ALL INPUTS
+            const inputs = document.getElementsByTagName("input");
+            for (const input of inputs) {
+                input.onchange = function() {
+                    // MAKE SURE INPUT IS VALID
+                    let value = parseInt(this.value);
+                    if (value < 0 || isNaN(value)) { value = 0; }
+                    this.value = value;
+
+                    // DO THE CALCULATIONS
+                    display_results(calculate());
+                }
+            }
+        }
+
+        function calculate() {
+            const values = {};
+            const items = document.querySelectorAll("div#items > div");
+            
+            for (const item of items) {
+                values[item.id] = {
+                    need: parseInt(item.childNodes[3].value),
+                    have: parseInt(item.childNodes[9].value)
+                };
+            }
+
+            const STARTING_RARITY = 2;
+            const ENDING_RARITY = (STARTING_RARITY + (Object.keys(values).length - 1));
+            const result = {
+                range: {
+                    start: STARTING_RARITY,
+                    end: ENDING_RARITY
+                }
+            };
+            for (let i = STARTING_RARITY ; i <= ENDING_RARITY ; i++) {
+                const item = values[`rarity-${i}`];
+                result[`rarity-${i}`] = {
+                    complete: false,
+                    have: 0,
+                    need: item.need,
+                    remainder: 0
+                };
+                
+                const remainder = item.have - item.need;
+                if (remainder >= 0) {
+                    if (i < ENDING_RARITY) {
+                        // CRAFT EXTRAS TO HIGHER RARITY ITEM
+                        values[`rarity-${i + 1}`]["have"] += Math.floor(remainder / 3);
+                        result[`rarity-${i}`]["remainder"] = remainder % 3;
+                        result[`rarity-${i}`]["have"] = item.need;
+                    }
+                    else {
+                        // ITEM IS HIGHEST RARITY
+                        result[`rarity-${i}`]["have"] = item.have;
+                    }
+                    result[`rarity-${i}`]["complete"] = true;
+                }
+                else {
+                    result[`rarity-${i}`]["have"] = item.have;
+                }
+            }
+
+            return result;
+        }
+
+        function display_results(result) {
+            const elem = document.querySelector("div#results div");
+            // CLEAR EXISTING HTML
+            elem.innerHTML = "";
+
+            // WRITE NEW HTML
+            let complete = true;
+            let html = "";
+            for (let i = result.range.start ; i <= result.range.end ; i++) {
+                const item = result[`rarity-${i}`];
+                complete = (complete ? item.complete : false);
+                html += `
+                    <div class="result">
+                        <img src="static/item_${i}.png" width="59" height="63">
+                        <span class="amount ${(item.complete ? "success" : "failure")}">${item.have + item.remainder} / ${item.need}</span>
+                    </div>
+                `;
+            }
+
+            // SET HTML
+            elem.innerHTML = (complete ? 
+                `<span class="success">You have enough weapon ascension materials.</span>` : 
+                `<span class="failure">You do not have enough weapon ascension materials.</span>`) + 
+                html;
+            
+            // REVEAL RESULTS
+            document.getElementById("results").hidden = false;
+        }
+    </script>
+</body>
+</html>
