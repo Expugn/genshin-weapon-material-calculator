@@ -15,6 +15,16 @@
     <meta name="description" content="Simple calculator for figuring out if you have enough weapon ascension materials so you don't have to do the math yourself.">
     <meta name="author" content="S'pugn">
 
+    <!-- OPEN GRAPH / FACEBOOK META DATA -->
+    <meta property="og:title" content="Genshin Impact - Weapon Material Calculator"/>
+    <meta property="og:description" content="Simple calculator for figuring out if you have enough weapon ascension materials so you don't have to do the math yourself."/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content="https://raw.githubusercontent.com/Expugn/genshin-weapon-material-calculator/main/static/logo512.png"/>
+    <meta property="og:image:width" content="64"/>
+    <meta property="og:image:height" content="64"/>
+    <meta property="og:url" content="https://expugn.github.io/genshin-weapon-material-calculator/"/>
+    <meta property="og:locale" content="en_US"/>
+
     <style>
         @font-face {
             font-family: 'hywh';
@@ -78,16 +88,33 @@
         #results header {
             padding-bottom: 1vh;
         }
+
         #results div div.result img {
             position: relative;
             top: 20px;
         }
+
         #results div div.result span {
             font-size: x-large;
         }
+
         span.amount {
             display: inline-block;
             width: 150px;
+        }
+
+        footer p {
+            text-align: right;
+            letter-spacing: 1px;
+            font-weight: bold;
+            font-family: 'Roboto', 'Segoe UI', 'San Francisco', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+        }
+
+        footer p img {
+            height: 24px;
+            width: 24px;
+            position: relative;
+            top: 7px;
         }
     </style>
 </head>
@@ -243,4 +270,12 @@
         }
     </script>
 </body>
+<footer>
+    <p>Made With <span style="color:#ff4d4d">❤</span> By S'pugn <img src="static/HAhaa.png" alt=""></p>
+    <p>
+        <a href="https://github.com/Expugn/genshin-weapon-material-calculator" target="_blank" style="text-decoration: none;">
+            <img src="static/GitHub-Mark-Light-32px.png" style="text-decoration: none;" alt="GitHub">
+        </a>
+    </p>
+</footer>
 </html>
