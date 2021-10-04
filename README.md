@@ -1,10 +1,14 @@
-# Genshin Impact - Weapon Ascension Material Calculator<br>(genshin-weapon-material-calculator)
+# Genshin Impact - Ascension Material Calculator<br>(genshin-weapon-material-calculator)
+
+*Previously known as "Genshin Impact - Weapon Ascension Material Calculator"*
 
 URL: <https://expugn.github.io/genshin-weapon-material-calculator/>
 
 ## Information
 This is just a simple calculator for figuring out if you have enough weapon ascension materials.<br>
 You can see if you have enough material without having to craft or do the math yourself. That's pretty much it.
+
+As of `October 3, 2021`, additional functionality has been added to include a calculator for talent materials. The original name, `Genshin Impact - Weapon Ascension Material Calculator` has been modified to `Genshin Impact - Ascension Material Calculator` as a result.
 
 Seriously though why isn't this more common, why do I need to create a whole web application just to easily check if I 
 have enough weapon materials without having to do the math myself. All these helper tools like <https://paimon.moe/> just tell you that you need, for example:

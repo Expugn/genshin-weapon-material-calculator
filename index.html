@@ -8,16 +8,16 @@
     <link rel="apple-touch-icon" href="static/logo192.png" />
     <link rel="manifest" href="manifest.json" />
 
-    <title>Genshin Impact - Weapon Material Calculator</title>
-    <meta name="title" content="Genshin Impact - Weapon Material Calculator"/>
+    <title>Genshin Impact - Material Calculator</title>
+    <meta name="title" content="Genshin Impact - Material Calculator"/>
 
     <!-- META DATA -->
-    <meta name="description" content="Simple calculator for figuring out if you have enough weapon ascension materials so you don't have to do the math yourself.">
+    <meta name="description" content="Simple calculator for figuring out if you have enough ascension materials so you don't have to do the math yourself.">
     <meta name="author" content="S'pugn">
 
     <!-- OPEN GRAPH / FACEBOOK META DATA -->
-    <meta property="og:title" content="Genshin Impact - Weapon Material Calculator"/>
-    <meta property="og:description" content="Simple calculator for figuring out if you have enough weapon ascension materials so you don't have to do the math yourself."/>
+    <meta property="og:title" content="Genshin Impact - Material Calculator"/>
+    <meta property="og:description" content="Simple calculator for figuring out if you have enough ascension materials so you don't have to do the math yourself."/>
     <meta property="og:type" content="website"/>
     <meta property="og:image" content="https://raw.githubusercontent.com/Expugn/genshin-weapon-material-calculator/main/static/logo512.png"/>
     <meta property="og:image:width" content="64"/>
@@ -52,49 +52,70 @@
             font-size: x-large;
         }
 
-        #items,
-        #results {
+        #presets,
+        .items,
+        .results {
             margin: auto;
             text-align: center;
             padding-top: 3vh;
         }
 
-        div#items > div {
+        .star {
+            position: relative;
+            top: 10px;
+            right: 10px;
+        }
+
+        .set {
+            display: block;
+            margin: auto;
+            text-align: center;
+            margin-top: 7px;
+            cursor: pointer;
+        }
+
+        div#presets .weapon,
+        div#presets .talent,
+        .results {
+            margin-bottom: 20px;
+        }
+
+        div.items > div {
             display: inline-block;
             padding: 5px;
             border-radius: 5px;
         }
 
-        div#items div div {
+        div.items div div {
             padding: 5px 0 5px 0;
         }
 
         img.item {
-            width: 177px;
+            width: 190px;
             height: 190px;
             margin: -20px 0 -20px 0;
             transform: scale(50%);
             display: block;
         }
 
-        div#rarity-2 { background-color: rgba(97, 135, 120, 0.5); }
-        div#rarity-3 { background-color: rgba(85, 113, 146, 0.5); }
-        div#rarity-4 { background-color: rgba(111, 98, 152, 0.5); }
-        div#rarity-5 { background-color: rgba(178, 111, 39, 0.5); }
+        div.rarity-2 { background-color: rgba(97, 135, 120, 0.5); }
+        div.rarity-3 { background-color: rgba(85, 113, 146, 0.5); }
+        div.rarity-4 { background-color: rgba(111, 98, 152, 0.5); }
+        div.rarity-5 { background-color: rgba(178, 111, 39, 0.5); }
 
         span.success { color: greenyellow; }
         span.failure { color: red; }
 
-        #results header {
+        .results header {
             padding-bottom: 1vh;
         }
 
-        #results div div.result img {
+        .results div div.result img {
             position: relative;
             top: 20px;
         }
 
-        #results div div.result span {
+        .results div div.result span {
             font-size: x-large;
         }
 
@@ -120,7 +141,7 @@
 </head>
 <body>
     <header>
-        Genshin Impact<br>Weapon Ascension Material Calculator
+        Genshin Impact<br><span style="color:red;text-decoration:line-through;text-decoration-style:wavy;"><span style="color: white;">Weapon</span></span> Ascension Material Calculator
     </header>
 
     <noscript>
@@ -137,47 +158,154 @@
         </style>
     </noscript>
 
-    <div id="items">
-        <div id="rarity-5">
-            <div>Needed</div>
-            <input class="need" type="number" min="0" value="0">
-            <img class="item" src="static/item_5.png">
-            <div>Owned</div>
-            <input class="have" type="number" min="0" value="0">
+    <div id="presets">
+        <div class="weapon">
+            Weapon:
+            <select class="rarity"></select>
+            <img class="star" src="data:image/png;base64,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" alt srcset>
+            <select class="start"></select>
+            to
+            <select class="end"></select>
+            <button class="set">Set Needed Weapon Materials</button>
         </div>
-        <div id="rarity-4">
-            <div>Needed</div>
-            <input class="need" type="number" min="0" value="0">
-            <img class="item" src="static/item_4.png">
-            <div>Owned</div>
-            <input class="have" type="number" min="0" value="0">
-        </div>
-        <div id="rarity-3">
-            <div>Needed</div>
-            <input class="need" type="number" min="0" value="0">
-            <img class="item" src="static/item_3.png">
-            <div>Owned</div>
-            <input class="have" type="number" min="0" value="0">
-        </div>
-        <div id="rarity-2">
-            <div>Needed</div>
-            <input class="need" type="number" min="0" value="0">
-            <img class="item" src="static/item_2.png">
-            <div>Owned</div>
-            <input class="have" type="number" min="0" value="0">
+        <div class="talent">
+            Talent:
+            <select class="start"></select>
+            to
+            <select class="end"></select>
+            <button class="set">Set Needed Talent Materials</button>
         </div>
     </div>
-    <div id="results" hidden>
-        <header>Results</header>
-        <div></div>
+
+    <div id="weapon">
+        <div class="items">
+            <div class="rarity-5">
+                <div>Needed</div>
+                <input class="need" type="number" min="0" value="0" data-type="weapon">
+                <img class="item" src="static/weapon_5.png">
+                <div>Owned</div>
+                <input class="have" type="number" min="0" value="0" data-type="weapon">
+            </div>
+            <div class="rarity-4">
+                <div>Needed</div>
+                <input class="need" type="number" min="0" value="0" data-type="weapon">
+                <img class="item" src="static/weapon_4.png">
+                <div>Owned</div>
+                <input class="have" type="number" min="0" value="0" data-type="weapon">
+            </div>
+            <div class="rarity-3">
+                <div>Needed</div>
+                <input class="need" type="number" min="0" value="0" data-type="weapon">
+                <img class="item" src="static/weapon_3.png">
+                <div>Owned</div>
+                <input class="have" type="number" min="0" value="0" data-type="weapon">
+            </div>
+            <div class="rarity-2">
+                <div>Needed</div>
+                <input class="need" type="number" min="0" value="0" data-type="weapon">
+                <img class="item" src="static/weapon_2.png">
+                <div>Owned</div>
+                <input class="have" type="number" min="0" value="0" data-type="weapon">
+            </div>
+        </div>
+        <div class="results" hidden>
+            <header>Results</header>
+            <div></div>
+        </div>
+    </div>
+    <div id="talent">
+        <div class="items">
+            <div class="rarity-4">
+                <div>Needed</div>
+                <input class="need" type="number" min="0" value="0" data-type="talent">
+                <img class="item" src="static/talent_4.png">
+                <div>Owned</div>
+                <input class="have" type="number" min="0" value="0" data-type="talent">
+            </div>
+            <div class="rarity-3">
+                <div>Needed</div>
+                <input class="need" type="number" min="0" value="0" data-type="talent">
+                <img class="item" src="static/talent_3.png">
+                <div>Owned</div>
+                <input class="have" type="number" min="0" value="0" data-type="talent">
+            </div>
+            <div class="rarity-2">
+                <div>Needed</div>
+                <input class="need" type="number" min="0" value="0" data-type="talent">
+                <img class="item" src="static/talent_2.png">
+                <div>Owned</div>
+                <input class="have" type="number" min="0" value="0" data-type="talent">
+            </div>
+        </div>
+        <div class="results" hidden>
+            <header>Results</header>
+            <div></div>
+        </div>
     </div>
 
     <script>
+        const PRESETS = {
+            talent: {
+                lv2:  { "rarity-2": 3 },
+                lv3:  { "rarity-3": 2 },
+                lv4:  { "rarity-3": 4 },
+                lv5:  { "rarity-3": 6 },
+                lv6:  { "rarity-3": 9 },
+                lv7:  { "rarity-4": 4 },
+                lv8:  { "rarity-4": 6 },
+                lv9:  { "rarity-4": 12 },
+                lv10: { "rarity-4": 16 }
+            },
+            weapon: {
+                "rarity-1": {
+                    lv20:  { "rarity-2": 1 },
+                    lv40:  { "rarity-3": 1 },
+                    lv50:  { "rarity-3": 2 },
+                    lv60:  { "rarity-4": 1 }
+                },
+                "rarity-2": {
+                    lv20:  { "rarity-2": 1 },
+                    lv40:  { "rarity-3": 1 },
+                    lv50:  { "rarity-3": 3 },
+                    lv60:  { "rarity-4": 1 }
+                },
+                "rarity-3": {
+                    lv20:  { "rarity-2": 2 },
+                    lv40:  { "rarity-3": 2 },
+                    lv50:  { "rarity-3": 4 },
+                    lv60:  { "rarity-4": 2 },
+                    lv70:  { "rarity-4": 4 },
+                    lv80:  { "rarity-5": 3 }
+                },
+                "rarity-4": {
+                    lv20:  { "rarity-2": 3 },
+                    lv40:  { "rarity-3": 3 },
+                    lv50:  { "rarity-3": 6 },
+                    lv60:  { "rarity-4": 3 },
+                    lv70:  { "rarity-4": 6 },
+                    lv80:  { "rarity-5": 4 }
+                },
+                "rarity-5": {
+                    lv20:  { "rarity-2": 5 },
+                    lv40:  { "rarity-3": 5 },
+                    lv50:  { "rarity-3": 9 },
+                    lv60:  { "rarity-4": 5 },
+                    lv70:  { "rarity-4": 9 },
+                    lv80:  { "rarity-5": 6 }
+                }
+            }
+        };
+
         init();
         function init() {
             // ADD ONCHANGE EVENT TO ALL INPUTS
             const inputs = document.getElementsByTagName("input");
             for (const input of inputs) {
+                // SKIP PRESET INPUTS
+                if (input.dataset.type === "preset") {
+                    continue;
+                }
+
                 input.onchange = function() {
                     // MAKE SURE INPUT IS VALID
                     let value = parseInt(this.value);
@@ -185,17 +313,207 @@
                     this.value = value;
 
                     // DO THE CALCULATIONS
-                    display_results(calculate());
+                    display_results(calculate(input.dataset.type), input.dataset.type);
                 }
+            }
+
+            // SET UP WEAPON PRESETS
+            const weapon_rarity = document.querySelector("div#presets .weapon .rarity");
+            const weapon_start = document.querySelector("div#presets .weapon .start");
+            const weapon_end = document.querySelector("div#presets .weapon .end");
+            let weapon_rarity_html = "";
+            let weapon_html = "";
+            for (const weapon_key in PRESETS.weapon) {
+                weapon_rarity_html += `<option value="${weapon_key}">${weapon_key.replace("rarity-", "")}</option>`;
+            }
+            weapon_rarity.innerHTML = weapon_rarity_html;
+            
+            for (const weapon_key in PRESETS.weapon[weapon_rarity.value]) {
+                weapon_html += `<option value="${weapon_key}">${weapon_key}</option>`;
+            }
+            weapon_start.innerHTML = weapon_html;
+            weapon_end.innerHTML = weapon_html;
+            weapon_start.onchange = check_weapon_change;
+            weapon_end.onchange = check_weapon_change;
+            function check_weapon_change() {
+                // MAKE SURE min IS BELOW OR EQUAL TO max
+                const min = parseInt(weapon_start.value.replace("lv", ""));
+                const max = parseInt(weapon_end.value.replace("lv", ""));
+                
+                if (min > max) {
+                    // set max to match min
+                    weapon_end.value = weapon_start.value;
+                }
+            }
+
+            weapon_rarity.onchange = weapon_rarity_change;
+            function weapon_rarity_change() {
+                // SET NEW HTML AND MAKE SURE min AND max ARE WITHIN NEW BOUNDARIES
+                const new_rarity = weapon_rarity.value;
+                let html = "";
+                for (const weapon_key in PRESETS.weapon[new_rarity]) {
+                    html += `<option value="${weapon_key}">${weapon_key}</option>`;
+                }
+                weapon_start.innerHTML = html;
+                weapon_end.innerHTML = html;
+            }
+
+            document.querySelector("div#presets .weapon .set").onclick = function() {
+                const min = weapon_start.value;
+                const max = weapon_end.value;
+                const amount = {};
+                let add = false;
+                for (const weapon_key in PRESETS.weapon[weapon_rarity.value]) {
+                    if (!add) {
+                        if (weapon_key === min) {
+                            add = true;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+
+                    add_items();
+                    
+                    if (weapon_key === max) {
+                        break;
+                    }
+                    
+                    function add_items() {
+                        const weapon = PRESETS.weapon[weapon_rarity.value][weapon_key];
+                        const material_type = Object.keys(weapon)[0];
+                        const material = weapon[material_type];
+                        
+                        if (material_type in amount) {
+                            amount[material_type] += material;
+                        }
+                        else {
+                            amount[material_type] = material;
+                        }
+                    }
+                }
+
+                // UPDATE DOCUMENT
+                const weapon_inputs = document.querySelectorAll("div#weapon .items div > input.need");                                                
+                for (const weapon_input of weapon_inputs) {
+                    const material_type = weapon_input.parentElement.classList[0];
+                    if (material_type in amount) {
+                        weapon_input.value = amount[material_type];
+                    }
+                    else {
+                        weapon_input.value = 0;
+                    }
+                }
+                display_results(calculate("weapon"), "weapon");
+            };
+
+            // SET UP TALENT PRESETS
+            const talent_start = document.querySelector("div#presets .talent .start");
+            const talent_end = document.querySelector("div#presets .talent .end");
+            let talent_html = "";
+            for (const talent_key in PRESETS.talent) {
+                talent_html += `<option value="${talent_key}">${talent_key}</option>`;
+            }
+            talent_start.innerHTML = talent_html;
+            talent_end.innerHTML = talent_html;
+            talent_start.onchange = check_talent_change;
+            talent_end.onchange = check_talent_change;
+            function check_talent_change() {
+                // MAKE SURE min IS BELOW OR EQUAL TO max
+                const min = parseInt(talent_start.value.replace("lv", ""));
+                const max = parseInt(talent_end.value.replace("lv", ""));
+                
+                if (min > max) {
+                    // set max to match min
+                    talent_end.value = talent_start.value;
+                }
+            }
+            document.querySelector("div#presets .talent .set").onclick = function() {
+                const min = talent_start.value;
+                const max = talent_end.value;
+                const amount = {};
+                let add = false;
+                for (const talent_key in PRESETS.talent) {
+                    if (!add) {
+                        if (talent_key === min) {
+                            add = true;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+
+                    add_items();
+                    
+                    if (talent_key === max) {
+                        break;
+                    }
+                    
+                    function add_items() {
+                        const talent = PRESETS.talent[talent_key];
+                        const material_type = Object.keys(talent)[0];
+                        const material = talent[material_type];
+                        
+                        if (material_type in amount) {
+                            amount[material_type] += material;
+                        }
+                        else {
+                            amount[material_type] = material;
+                        }
+                    }
+                }
+
+                // UPDATE DOCUMENT
+                const talent_inputs = document.querySelectorAll("div#talent .items div > input.need");                                                
+                for (const talent_input of talent_inputs) {
+                    const material_type = talent_input.parentElement.classList[0];
+                    if (material_type in amount) {
+                        talent_input.value = amount[material_type];
+                    }
+                    else {
+                        talent_input.value = 0;
+                    }
+                }
+                display_results(calculate("talent"), "talent");
+            };
+
+            function display_results(result, type) {
+                const elem = document.querySelector(`div#${type} .results div`);
+                // CLEAR EXISTING HTML
+                elem.innerHTML = "";
+
+                // WRITE NEW HTML
+                let complete = true;
+                let html = "";
+                for (let i = result.range.start ; i <= result.range.end ; i++) {
+                    const item = result[`rarity-${i}`];
+                    complete = (complete ? item.complete : false);
+                    html += `
+                        <div class="result">
+                            <img src="static/${type}_${i}.png" width="59" height="63">
+                            <span class="amount ${(item.complete ? "success" : "failure")}">${item.have + item.remainder} / ${item.need}</span>
+                        </div>
+                    `;
+                }
+
+                // SET HTML
+                elem.innerHTML = (complete ? 
+                    `<span class="success">You have enough ${type} ascension materials.</span>` : 
+                    `<span class="failure">You do not have enough ${type} ascension materials.</span>`) + 
+                    html;
+                
+                // REVEAL RESULTS
+                document.querySelector(`div#${type} .results`).hidden = false;
             }
         }
 
-        function calculate() {
+        function calculate(type) {
             const values = {};
-            const items = document.querySelectorAll("div#items > div");
+            const items = document.querySelectorAll(`div#${type} .items > div`);
             
             for (const item of items) {
-                values[item.id] = {
+                // item.classList[0] === "rarity-#"
+                values[item.classList[0]] = {
                     need: parseInt(item.childNodes[3].value),
                     have: parseInt(item.childNodes[9].value)
                 };
@@ -238,35 +556,6 @@
             }
 
             return result;
-        }
-
-        function display_results(result) {
-            const elem = document.querySelector("div#results div");
-            // CLEAR EXISTING HTML
-            elem.innerHTML = "";
-
-            // WRITE NEW HTML
-            let complete = true;
-            let html = "";
-            for (let i = result.range.start ; i <= result.range.end ; i++) {
-                const item = result[`rarity-${i}`];
-                complete = (complete ? item.complete : false);
-                html += `
-                    <div class="result">
-                        <img src="static/item_${i}.png" width="59" height="63">
-                        <span class="amount ${(item.complete ? "success" : "failure")}">${item.have + item.remainder} / ${item.need}</span>
-                    </div>
-                `;
-            }
-
-            // SET HTML
-            elem.innerHTML = (complete ? 
-                `<span class="success">You have enough weapon ascension materials.</span>` : 
-                `<span class="failure">You do not have enough weapon ascension materials.</span>`) + 
-                html;
-            
-            // REVEAL RESULTS
-            document.getElementById("results").hidden = false;
         }
     </script>
 </body>
